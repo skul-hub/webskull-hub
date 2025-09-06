@@ -17,20 +17,33 @@ function showAdminSection(sec){
   document.getElementById(sec).style.display="block";
 }
 
+// --- Admin Dashboard ---
 // Tambah produk
-document.getElementById("add-product-form").addEventListener("submit", e=>{
-  e.preventDefault();
-  const name = document.getElementById("product-name").value;
-  const price = document.getElementById("product-price").value;
-  const image = document.getElementById("product-image").value;
-
-  db.collection("products").add({
-    name, price, imageURL:image,
+async function addProduct(name,price,imageURL){
+  await db.collection("products").add({
+    name: name,
+    price: Number(price),
+    imageURL: imageURL,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
-  e.target.reset();
   alert("Produk berhasil ditambahkan!");
-});
+}
+
+// Update produk
+async function updateProduct(docId,name,price,imageURL){
+  await db.collection("products").doc(docId).update({
+    name: name,
+    price: Number(price),
+    imageURL: imageURL
+  });
+  alert("Produk berhasil diupdate!");
+}
+
+// Hapus produk
+async function deleteProduct(docId){
+  await db.collection("products").doc(docId).delete();
+  alert("Produk berhasil dihapus!");
+}
 
 // Tabel produk realtime
 db.collection("products").onSnapshot(snapshot=>{
@@ -59,47 +72,34 @@ function deleteProduct(id){
 }
 
 // Kelola Pesanan realtime
-function renderOrders(){
-  db.collection("orders").orderBy("createdAt","desc").onSnapshot(snapshot=>{
-    const pending = document.getElementById("pending-orders");
-    const done = document.getElementById("done-orders");
-    const batal = document.getElementById("batal-orders");
-    pending.innerHTML=""; done.innerHTML=""; batal.innerHTML="";
-
+db.collection("orders").orderBy("createdAt","desc")
+  .onSnapshot(snapshot=>{
+    const pendingTable = document.getElementById("pending-orders");
+    pendingTable.innerHTML = "";
     snapshot.forEach(doc=>{
       const data = doc.data();
-      const card = document.createElement("div");
-      card.className="order-card";
-      card.innerHTML=`
-        <p>Nama: ${data.buyerName}</p>
-        <p>Barang: ${data.items.map(i=>i.name).join(", ")}</p>
-        <p>Qty: ${data.items.map(i=>i.qty).join(", ")}</p>
-        <p>WA: ${data.phone}</p>
-        <p>Telegram: ${data.telegram || "-"}</p>
-      `;
-      if(data.status==="pending"){
-        const doneBtn=document.createElement("button");
-        doneBtn.textContent="Done";
-        doneBtn.onclick=()=>updateOrderStatus(doc.id,"done");
-        const batalBtn=document.createElement("button");
-        batalBtn.textContent="Batal";
-        batalBtn.onclick=()=>updateOrderStatus(doc.id,"batal");
-        card.appendChild(doneBtn);
-        card.appendChild(batalBtn);
-        pending.appendChild(card);
-      } else if(data.status==="done"){
-        done.appendChild(card);
-      } else if(data.status==="batal"){
-        batal.appendChild(card);
+      if(data.status === "pending"){
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${data.username}</td>
+          <td>${data.items.map(i=>i.name+" x"+i.qty).join(", ")}</td>
+          <td>${data.total}</td>
+          <td>
+            <button onclick="setOrderStatus('${doc.id}','done')">Done</button>
+            <button onclick="setOrderStatus('${doc.id}','batal')">Batal</button>
+          </td>
+        `;
+        pendingTable.appendChild(row);
       }
     });
   });
-}
 
-function updateOrderStatus(id,status){
-  db.collection("orders").doc(id).update({status});
+// Ubah status order
+async function setOrderStatus(docId,status){
+  await db.collection("orders").doc(docId).update({
+    status: status
+  });
 }
-
 // Announcement
 document.getElementById("announcement-form").addEventListener("submit", e=>{
   e.preventDefault();
