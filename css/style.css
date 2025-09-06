@@ -1,86 +1,92 @@
 /* ===== Global ===== */
 body{
-    font-family: 'Arial', sans-serif;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin:0;
     padding:0;
-    background:#f2f2f2;
+    background:#f5f6fa;
 }
 
 h1,h2,h3{
     text-align:center;
     margin:20px 0;
+    color:#2f3640;
 }
 
 /* ===== Navbar ===== */
 nav{
-    background:#111;
+    background:#192a56;
     color:#fff;
-    padding:10px 20px;
+    padding:12px 20px;
     display:flex;
     gap:20px;
     align-items:center;
+    box-shadow:0 3px 6px rgba(0,0,0,0.1);
 }
 nav a{
     color:#fff;
     text-decoration:none;
-    font-weight:bold;
+    font-weight:600;
+    transition:0.2s;
 }
 nav a:hover{
-    text-decoration:underline;
+    color:#f5a623;
 }
 
 /* ===== Container ===== */
 .container{
     width:90%;
-    max-width:1000px;
+    max-width:1100px;
     margin:30px auto;
     background:#fff;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
 }
 
 /* ===== Product Grid ===== */
 .product-grid{
     display:flex;
     flex-wrap:wrap;
-    gap:15px;
+    gap:20px;
     justify-content:center;
 }
 
 .product-card{
     background:#fff;
     padding:15px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    width:180px;
+    border-radius:12px;
+    box-shadow:0 3px 12px rgba(0,0,0,0.1);
+    width:200px;
     text-align:center;
-    transition:transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 .product-card:hover{
     transform:scale(1.05);
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
 }
 .product-card img{
     width:100%;
-    height:120px;
+    height:130px;
     object-fit:cover;
-    border-radius:5px;
+    border-radius:8px;
+    margin-bottom:10px;
 }
 
 /* ===== Buttons ===== */
 button{
-    padding:8px 12px;
+    padding:10px 15px;
     margin:5px 0;
     border:none;
-    border-radius:5px;
-    background:#111;
+    border-radius:6px;
+    background:#192a56;
     color:#fff;
     cursor:pointer;
-    font-weight:bold;
-    transition:0.2s;
+    font-weight:600;
+    transition:0.3s;
 }
 button:hover{
-    background:#333;
+    background:#40739e;
+    transform:scale(1.05);
 }
 
 /* ===== Table ===== */
@@ -88,39 +94,98 @@ table{
     width:100%;
     border-collapse:collapse;
     margin-top:15px;
+    font-size:14px;
 }
 th,td{
     padding:10px;
-    border:1px solid #ccc;
+    border:1px solid #dcdde1;
     text-align:center;
 }
 th{
-    background:#111;
+    background:#192a56;
     color:#fff;
+    font-weight:600;
+}
+tr:hover{
+    background:#f1f2f6;
+}
+td img{
+    width:50px;
+    height:50px;
+    object-fit:cover;
+    border-radius:5px;
 }
 
 /* ===== Form Inputs ===== */
 input[type=text], input[type=email], input[type=password], input[type=number]{
     width:calc(100% - 20px);
-    padding:8px;
-    margin:5px 0;
-    border-radius:5px;
-    border:1px solid #ccc;
+    padding:10px;
+    margin:5px 0 12px 0;
+    border-radius:6px;
+    border:1px solid #dcdde1;
+    transition:0.3s;
+}
+input:focus{
+    border-color:#40739e;
+    outline:none;
+    box-shadow:0 0 5px rgba(64,115,158,0.3);
 }
 
 /* ===== Announcement ===== */
-#announcement p{
-    background:#fffae6;
-    padding:8px;
-    border-left:5px solid #ffc107;
-    margin:5px 0;
+#announcement, #announcement-list{
+    margin:10px 0;
+}
+#announcement p, #announcement-list p{
+    background:#ffeaa7;
+    padding:10px;
+    border-left:6px solid #fab1a0;
     border-radius:5px;
+    margin-bottom:8px;
+    font-weight:500;
 }
 
 /* ===== Cart ===== */
 #cart-container div{
-    background:#e0f7fa;
+    background:#dff9fb;
     margin:5px 0;
-    padding:8px;
-    border-radius:5px;
+    padding:10px;
+    border-radius:6px;
+    display:flex;
+    justify-content:space-between;
+    font-weight:500;
+}
+
+/* ===== History ===== */
+#history-container div{
+    background:#f1f2f6;
+    padding:10px;
+    margin:5px 0;
+    border-left:5px solid #40739e;
+    border-radius:6px;
+    font-weight:500;
+}
+
+/* ===== Container form admin ===== */
+.container div input, .container div button{
+    display:block;
+    width:100%;
+    max-width:250px;
+}
+.container div button{
+    margin-top:10px;
+}
+
+/* ===== Responsive ===== */
+@media(max-width:768px){
+    .product-grid{
+        flex-direction:column;
+        align-items:center;
+    }
+    nav{
+        flex-direction:column;
+        gap:10px;
+    }
+    .container div input, .container div button{
+        max-width:100%;
+    }
 }
