@@ -13,23 +13,28 @@
 </head>
 <body>
 <nav>
-  <a href="user.html">Beranda</a>
-  <a href="#cart">Keranjang</a>
-  <a href="#history">History</a>
-  <a href="#" onclick="logout()">Logout</a>
+    <a href="user.html">Beranda</a>
+    <a href="#cart">Keranjang</a>
+    <a href="#history">History</a>
+    <a href="#" onclick="logout()">Logout</a>
 </nav>
 
-<h1>Selamat datang di StoreSkull</h1>
+<div class="container">
+    <h1>Selamat Datang di StoreSkull</h1>
 
-<div id="announcement"></div>
-<div id="product-container" class="product-grid"></div>
+    <h2>Pengumuman</h2>
+    <div id="announcement"></div>
 
-<h2>Keranjang</h2>
-<div id="cart-container"></div>
-<p>Total: <span id="cart-total">0</span></p>
-<button onclick="checkoutPrompt()">Checkout</button>
+    <h2>Produk</h2>
+    <div id="product-container" class="product-grid"></div>
 
-<h2>History</h2>
-<div id="history-container"></div>
+    <h2>Keranjang</h2>
+    <div id="cart-container"></div>
+    <p>Total: <span id="cart-total">0</span></p>
+    <button onclick="checkoutPrompt()">Checkout</button>
+
+    <h2>History Pesanan</h2>
+    <div id="history-container"></div>
+</div>
 </body>
 </html>
