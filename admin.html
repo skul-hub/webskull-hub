@@ -13,50 +13,57 @@
 </head>
 <body>
 <nav>
-  <a href="admin.html">Beranda</a>
-  <a href="#products">Kelola Produk</a>
-  <a href="#orders">Kelola Pesanan</a>
-  <a href="#" onclick="logout()">Logout</a>
+    <a href="admin.html">Beranda</a>
+    <a href="#products">Kelola Produk</a>
+    <a href="#orders">Kelola Pesanan</a>
+    <a href="#" onclick="logout()">Logout</a>
 </nav>
 
-<h1>Selamat Datang Di Dashboard Admin</h1>
+<div class="container">
+    <h1>Dashboard Admin</h1>
 
-<h2>Kelola Produk</h2>
-<div>
-  <input type="text" id="product-name" placeholder="Nama Produk">
-  <input type="number" id="product-price" placeholder="Harga">
-  <input type="text" id="product-image" placeholder="URL Gambar">
-  <button onclick="addProductPrompt()">Tambah Produk</button>
+    <h2>Kelola Produk</h2>
+    <div>
+        <input type="text" id="product-name" placeholder="Nama Produk">
+        <input type="number" id="product-price" placeholder="Harga">
+        <input type="text" id="product-image" placeholder="URL Gambar">
+        <button onclick="addProductPrompt()">Tambah Produk</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>Harga</th>
+                <th>Gambar</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="product-list"></tbody>
+    </table>
+
+    <h2>Kelola Pesanan</h2>
+    <h3>Pending</h3>
+    <table>
+        <thead>
+            <tr><th>Username</th><th>Items</th><th>Total</th><th>Aksi</th></tr>
+        </thead>
+        <tbody id="pending-orders"></tbody>
+    </table>
+
+    <h3>Done</h3>
+    <table>
+        <tbody id="done-orders"></tbody>
+    </table>
+
+    <h3>Batal</h3>
+    <table>
+        <tbody id="batal-orders"></tbody>
+    </table>
+
+    <h2>Announcement</h2>
+    <input type="text" id="announcement-input" placeholder="Tulis announcement">
+    <button onclick="addAnnouncement()">Kirim</button>
+    <div id="announcement-list"></div>
 </div>
-<table>
-  <thead>
-    <tr><th>Nama</th><th>Harga</th><th>Gambar</th><th>Aksi</th></tr>
-  </thead>
-  <tbody id="product-list"></tbody>
-</table>
-
-<h2>Kelola Pesanan</h2>
-<h3>Pending</h3>
-<table>
-  <thead>
-    <tr><th>Username</th><th>Item</th><th>Total</th><th>Aksi</th></tr>
-  </thead>
-  <tbody id="pending-orders"></tbody>
-</table>
-
-<h3>Done</h3>
-<table>
-  <tbody id="done-orders"></tbody>
-</table>
-
-<h3>Batal</h3>
-<table>
-  <tbody id="batal-orders"></tbody>
-</table>
-
-<h2>Announcement</h2>
-<input type="text" id="announcement-input" placeholder="Tulis announcement">
-<button onclick="addAnnouncement()">Kirim</button>
-<div id="announcement-list"></div>
 </body>
 </html>
