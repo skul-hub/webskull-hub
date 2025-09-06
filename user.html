@@ -1,54 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>StoreSkull - User Dashboard</title>
-  <link rel="stylesheet" href="css/style.css">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="js/firebase.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StoreSkull - User Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+<script src="js/firebase.js"></script>
+<script src="js/user.js" defer></script>
 </head>
 <body>
-  <nav>
-    <div class="logo">StoreSkull</div>
-    <ul>
-      <li><a href="#" id="nav-beranda">Beranda</a></li>
-      <li><a href="#" id="nav-keranjang">Keranjang</a></li>
-      <li><a href="#" id="nav-history">History</a></li>
-      <li><a href="#" id="logout">Logout</a></li>
-    </ul>
-  </nav>
+<nav>
+  <a href="user.html">Beranda</a>
+  <a href="#cart">Keranjang</a>
+  <a href="#history">History</a>
+  <a href="#" onclick="logout()">Logout</a>
+</nav>
 
-  <main>
-    <section id="announcement-section">
-      <h2>Pengumuman</h2>
-      <div id="announcements"></div>
-    </section>
+<h1>Selamat datang di StoreSkull</h1>
 
-    <section id="beranda">
-      <h2>Beranda</h2>
-      <div id="products-container" class="product-grid"></div>
-    </section>
+<div id="announcement"></div>
+<div id="product-container" class="product-grid"></div>
 
-    <section id="keranjang" style="display:none;">
-      <h2>Keranjang</h2>
-      <div id="cart-items"></div>
-      <div id="cart-total"></div>
-      <button id="checkout-btn">Checkout</button>
-    </section>
+<h2>Keranjang</h2>
+<div id="cart-container"></div>
+<p>Total: <span id="cart-total">0</span></p>
+<button onclick="checkoutPrompt()">Checkout</button>
 
-    <section id="history" style="display:none;">
-      <h2>History</h2>
-      <div id="history-items"></div>
-    </section>
-  </main>
-
-  <footer>
-    &copy;2025 SKULLHOSTING - StoreSkull
-  </footer>
-
-  <script src="js/user.js"></script>
+<h2>History</h2>
+<div id="history-container"></div>
 </body>
 </html>
