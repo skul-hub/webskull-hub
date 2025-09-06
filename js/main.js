@@ -1,41 +1,21 @@
-// Example login form
-const loginForm = document.getElementById("login-form");
-const registerForm = document.getElementById("register-form");
+const loginForm=document.getElementById("login-form");
+const registerForm=document.getElementById("register-form");
+const showRegister=document.getElementById("show-register");
+const showLogin=document.getElementById("show-login");
 
-loginForm.addEventListener("submit", async e=>{
-  e.preventDefault();
-  const username = loginForm.username.value;
-  const password = loginForm.password.value;
+showRegister.addEventListener("click",e=>{e.preventDefault();loginForm.style.display="none";registerForm.style.display="block";});
+showLogin.addEventListener("click",e=>{e.preventDefault();registerForm.style.display="none";loginForm.style.display="block";});
 
-  // cek admin dulu
-  if(isAdminLogin(username,password)){
-    alert("Login admin berhasil!");
-    window.location.href = "admin.html";
-    return;
-  }
-
-  // user login
-  try{
-    await loginUser(username,password);
-    alert("Login user berhasil!");
-    window.location.href = "user.html";
-  } catch(err){
-    alert(err.message);
-  }
+document.getElementById("login-btn").addEventListener("click",async ()=>{
+  const username=document.getElementById("login-username").value;
+  const password=document.getElementById("login-password").value;
+  if(isAdminLogin(username,password)){alert("Login admin berhasil!");window.location.href="admin.html";return;}
+  try{await loginUser(username,password);alert("Login user berhasil!");window.location.href="user.html";}catch(err){alert(err.message);}
 });
 
-// register form
-registerForm.addEventListener("submit", async e=>{
-  e.preventDefault();
-  const username = registerForm.username.value;
-  const email = registerForm.email.value;
-  const password = registerForm.password.value;
-
-  try{
-    await registerUser(username,email,password);
-    alert("Registrasi berhasil! Silakan login");
-    registerForm.reset();
-  } catch(err){
-    alert(err.message);
-  }
+document.getElementById("register-btn").addEventListener("click",async ()=>{
+  const username=document.getElementById("register-username").value;
+  const email=document.getElementById("register-email").value;
+  const password=document.getElementById("register-password").value;
+  try{await registerUser(username,email,password);alert("Registrasi berhasil! Silakan login");registerForm.reset();loginForm.style.display="block";registerForm.style.display="none";}catch(err){alert(err.message);}
 });
