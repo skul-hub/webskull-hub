@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded",()=>{
+
 const productContainer=document.getElementById("product-container");
 const announcementContainer=document.getElementById("announcement");
 const cartContainer=document.getElementById("cart-container");
@@ -5,21 +7,25 @@ const cartTotal=document.getElementById("cart-total");
 const historyContainer=document.getElementById("history-container");
 let cart=[];
 
-// Produk realtime
+// ==== Produk realtime ====
 db.collection("products").orderBy("createdAt","desc").onSnapshot(snapshot=>{
   productContainer.innerHTML="";
   snapshot.forEach(doc=>{
     const data=doc.data();
     const card=document.createElement("div");
     card.className="product-card";
-    card.innerHTML=`<img src="${data.imageURL}"/><h3>${data.name}</h3><p>Rp ${data.price}</p>
+    card.innerHTML=`
+      <img src="${data.imageURL}" />
+      <h3>${data.name}</h3>
+      <p>Rp ${data.price}</p>
       <button onclick="buyProduct('${doc.id}','${data.name}',${data.price})">Buy</button>
-      <button onclick="addToCart('${doc.id}','${data.name}',${data.price})">Keranjang</button>`;
+      <button onclick="addToCart('${doc.id}','${data.name}',${data.price})">Keranjang</button>
+    `;
     productContainer.appendChild(card);
   });
 });
 
-// Announcement realtime
+// ==== Announcement realtime ====
 db.collection("announcement").orderBy("createdAt","desc").onSnapshot(snapshot=>{
   announcementContainer.innerHTML="";
   snapshot.forEach(doc=>{
@@ -30,29 +36,33 @@ db.collection("announcement").orderBy("createdAt","desc").onSnapshot(snapshot=>{
   });
 });
 
-// Load history realtime
+// ==== History realtime ====
 auth.onAuthStateChanged(user=>{
   if(user){
     db.collection("orders").where("uid","==",user.uid).orderBy("createdAt","desc")
-    .onSnapshot(snapshot=>{
-      historyContainer.innerHTML="";
-      snapshot.forEach(doc=>{
-        const data=doc.data();
-        const div=document.createElement("div");
-        div.innerHTML=`<p>Status: ${data.status}</p><p>Items: ${data.items.map(i=>i.name+" x"+i.qty).join(", ")}</p><p>Total: Rp ${data.total}</p>`;
-        historyContainer.appendChild(div);
+      .onSnapshot(snapshot=>{
+        historyContainer.innerHTML="";
+        snapshot.forEach(doc=>{
+          const data=doc.data();
+          const div=document.createElement("div");
+          div.innerHTML=`
+            <p>Status: ${data.status}</p>
+            <p>Items: ${data.items.map(i=>i.name+" x"+i.qty).join(", ")}</p>
+            <p>Total: Rp ${data.total}</p>
+          `;
+          historyContainer.appendChild(div);
+        });
       });
-    });
   }
 });
 
-// Keranjang
-function addToCart(id,name,price){
+// ==== Keranjang ====
+window.addToCart=(id,name,price)=>{
   const existing=cart.find(i=>i.id===id);
-  if(existing)existing.qty++;
+  if(existing) existing.qty++;
   else cart.push({id,name,price,qty:1});
   renderCart();
-}
+};
 
 function renderCart(){
   cartContainer.innerHTML="";
@@ -66,8 +76,8 @@ function renderCart(){
   cartTotal.textContent=total;
 }
 
-// Buy langsung
-function buyProduct(id,name,price){
+// ==== Buy langsung ====
+window.buyProduct=(id,name,price)=>{
   const username=prompt("Masukkan Nama:");
   const phone=prompt("Masukkan Nomor WA:");
   const telegram=prompt("Masukkan Username Telegram (opsional):");
@@ -79,10 +89,10 @@ function buyProduct(id,name,price){
     uid:user.uid,username,phone,telegram,items,total,status:"pending",
     createdAt:firebase.firestore.FieldValue.serverTimestamp()
   }).then(()=>alert("Pesanan dikirim ke admin!"));
-}
+};
 
-// Checkout dari keranjang
-function checkoutPrompt(){
+// ==== Checkout dari keranjang ====
+window.checkoutPrompt=()=>{
   if(cart.length===0) return alert("Keranjang kosong!");
   const username=prompt("Masukkan Nama:");
   const phone=prompt("Masukkan Nomor WA:");
@@ -97,7 +107,9 @@ function checkoutPrompt(){
   }).then(()=>{
     cart=[];renderCart();alert("Checkout berhasil! Admin akan menghubungi kamu.");
   });
-}
+};
 
-// Logout
-function logout(){auth.signOut().then(()=>window.location.href="index.html");}
+// ==== Logout ====
+window.logout=()=>auth.signOut().then(()=>window.location.href="index.html");
+
+});
