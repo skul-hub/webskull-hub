@@ -1,107 +1,103 @@
-const user = auth.currentUser;
-let cart = [];
+const productContainer=document.getElementById("product-container");
+const announcementContainer=document.getElementById("announcement");
+const cartContainer=document.getElementById("cart-container");
+const cartTotal=document.getElementById("cart-total");
+const historyContainer=document.getElementById("history-container");
+let cart=[];
 
-// Logout
-document.getElementById("logout").addEventListener("click", ()=>auth.signOut().then(()=>window.location.href="index.html"));
-
-// Navbar switch
-document.getElementById("nav-beranda").addEventListener("click",()=>showSection("beranda"));
-document.getElementById("nav-keranjang").addEventListener("click",()=>showSection("keranjang"));
-document.getElementById("nav-history").addEventListener("click",()=>showSection("history"));
-
-function showSection(sec){
-  document.getElementById("beranda").style.display="none";
-  document.getElementById("keranjang").style.display="none";
-  document.getElementById("history").style.display="none";
-  document.getElementById(sec).style.display="block";
-}
-
-// Realtime products
-db.collection("products").onSnapshot(snapshot=>{
-  const container = document.getElementById("products-container");
-  container.innerHTML="";
+// Produk realtime
+db.collection("products").orderBy("createdAt","desc").onSnapshot(snapshot=>{
+  productContainer.innerHTML="";
   snapshot.forEach(doc=>{
-    const data = doc.data();
-    const card = document.createElement("div");
+    const data=doc.data();
+    const card=document.createElement("div");
     card.className="product-card";
-    card.innerHTML=`
-      <img src="${data.imageURL}" alt="${data.name}">
-      <h3>${data.name}</h3>
-      <p>Rp${data.price}</p>
-      <button onclick="buyProduct('${doc.id}','${data.name}','${data.price}')">BUY</button>
-      <button onclick="addToCart('${doc.id}','${data.name}','${data.price}')">Tambah ke Keranjang</button>
-    `;
-    container.appendChild(card);
+    card.innerHTML=`<img src="${data.imageURL}"/><h3>${data.name}</h3><p>Rp ${data.price}</p>
+      <button onclick="buyProduct('${doc.id}','${data.name}',${data.price})">Buy</button>
+      <button onclick="addToCart('${doc.id}','${data.name}',${data.price})">Keranjang</button>`;
+    productContainer.appendChild(card);
   });
 });
 
 // Announcement realtime
-db.collection("announcements").orderBy("createdAt","desc")
-  .onSnapshot(snapshot=>{
-    const ann = document.getElementById("announcements");
-    ann.innerHTML="";
-    snapshot.forEach(doc=>{
-      ann.innerHTML+=`<p>${doc.data().message}</p>`;
+db.collection("announcement").orderBy("createdAt","desc").onSnapshot(snapshot=>{
+  announcementContainer.innerHTML="";
+  snapshot.forEach(doc=>{
+    const data=doc.data();
+    const p=document.createElement("p");
+    p.textContent=data.text;
+    announcementContainer.appendChild(p);
+  });
+});
+
+// Load history realtime
+auth.onAuthStateChanged(user=>{
+  if(user){
+    db.collection("orders").where("uid","==",user.uid).orderBy("createdAt","desc")
+    .onSnapshot(snapshot=>{
+      historyContainer.innerHTML="";
+      snapshot.forEach(doc=>{
+        const data=doc.data();
+        const div=document.createElement("div");
+        div.innerHTML=`<p>Status: ${data.status}</p><p>Items: ${data.items.map(i=>i.name+" x"+i.qty).join(", ")}</p><p>Total: Rp ${data.total}</p>`;
+        historyContainer.appendChild(div);
+      });
     });
-  });
-
-// Buy product
-function buyProduct(id,name,price){
-  const buyerName = prompt("Masukkan nama anda");
-  const phone = prompt("Masukkan nomor WA");
-  const telegram = prompt("Masukkan Telegram (opsional)");
-
-  db.collection("orders").add({
-    userId: auth.currentUser.uid,
-    items: [{productId:id,name:name,qty:1,price:price}],
-    buyerName: buyerName,
-    phone: phone,
-    telegram: telegram,
-    status: "pending",
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
-  alert("Pesanan terkirim ke admin!");
-}
+  }
+});
 
 // Keranjang
 function addToCart(id,name,price){
-  cart.push({productId:id,name:name,qty:1,price:price});
-  alert("Produk ditambahkan ke keranjang!");
+  const existing=cart.find(i=>i.id===id);
+  if(existing)existing.qty++;
+  else cart.push({id,name,price,qty:1});
+  renderCart();
 }
 
-// Checkout
-document.getElementById("checkout-btn").addEventListener("click", ()=>{
-  if(cart.length==0) return alert("Keranjang kosong!");
-  const buyerName = prompt("Masukkan nama anda");
-  const phone = prompt("Masukkan nomor WA");
-  const telegram = prompt("Masukkan Telegram (opsional)");
-  db.collection("orders").add({
-    userId: auth.currentUser.uid,
-    items: cart,
-    buyerName,
-    phone,
-    telegram,
-    status:"pending",
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+function renderCart(){
+  cartContainer.innerHTML="";
+  let total=0;
+  cart.forEach(i=>{
+    const div=document.createElement("div");
+    div.textContent=`${i.name} x ${i.qty} = Rp ${i.price*i.qty}`;
+    cartContainer.appendChild(div);
+    total+=i.price*i.qty;
   });
-  cart=[];
-  alert("Checkout berhasil!");
-});
+  cartTotal.textContent=total;
+}
 
-// History realtime
-db.collection("orders").where("userId","==",auth.currentUser?.uid)
-  .orderBy("createdAt","desc")
-  .onSnapshot(snapshot=>{
-    const historyDiv = document.getElementById("history-items");
-    historyDiv.innerHTML="";
-    snapshot.forEach(doc=>{
-      const data = doc.data();
-      historyDiv.innerHTML+=`
-        <div class="history-card">
-          <p>Nama Barang: ${data.items.map(i=>i.name).join(", ")}</p>
-          <p>Qty: ${data.items.map(i=>i.qty).join(", ")}</p>
-          <p>Status: ${data.status}</p>
-        </div>
-      `;
-    });
+// Buy langsung
+function buyProduct(id,name,price){
+  const username=prompt("Masukkan Nama:");
+  const phone=prompt("Masukkan Nomor WA:");
+  const telegram=prompt("Masukkan Username Telegram (opsional):");
+  if(!username || !phone) return alert("Nama dan WA wajib!");
+  const items=[{id,name,price,qty:1}];
+  const total=price;
+  const user=auth.currentUser;
+  db.collection("orders").add({
+    uid:user.uid,username,phone,telegram,items,total,status:"pending",
+    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  }).then(()=>alert("Pesanan dikirim ke admin!"));
+}
+
+// Checkout dari keranjang
+function checkoutPrompt(){
+  if(cart.length===0) return alert("Keranjang kosong!");
+  const username=prompt("Masukkan Nama:");
+  const phone=prompt("Masukkan Nomor WA:");
+  const telegram=prompt("Masukkan Username Telegram (opsional):");
+  if(!username || !phone) return alert("Nama dan WA wajib!");
+  const total=cart.reduce((acc,i)=>acc+i.price*i.qty,0);
+  const user=auth.currentUser;
+  const items=cart.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty}));
+  db.collection("orders").add({
+    uid:user.uid,username,phone,telegram,items,total,status:"pending",
+    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  }).then(()=>{
+    cart=[];renderCart();alert("Checkout berhasil! Admin akan menghubungi kamu.");
   });
+}
+
+// Logout
+function logout(){auth.signOut().then(()=>window.location.href="index.html");}
