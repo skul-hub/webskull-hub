@@ -1,68 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>StoreSkull - Admin Dashboard</title>
-  <link rel="stylesheet" href="css/style.css">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="js/firebase.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StoreSkull - Admin Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+<script src="js/firebase.js"></script>
+<script src="js/admin.js" defer></script>
 </head>
 <body>
-  <nav>
-    <div class="logo">StoreSkull Admin</div>
-    <ul>
-      <li><a href="#" id="nav-admin-beranda">Beranda</a></li>
-      <li><a href="#" id="nav-kelola-produk">Kelola Produk</a></li>
-      <li><a href="#" id="nav-kelola-pesanan">Kelola Pesanan</a></li>
-      <li><a href="#" id="nav-announcement">Announcement</a></li>
-      <li><a href="#" id="admin-logout">Logout</a></li>
-    </ul>
-  </nav>
+<nav>
+  <a href="admin.html">Beranda</a>
+  <a href="#products">Kelola Produk</a>
+  <a href="#orders">Kelola Pesanan</a>
+  <a href="#" onclick="logout()">Logout</a>
+</nav>
 
-  <main>
-    <section id="admin-beranda">
-      <h2>Selamat Datang Di Dashboard Admin</h2>
-      <p>WEBSITE CREATED BY SKULLHOSTING</p>
-    </section>
+<h1>Selamat Datang Di Dashboard Admin</h1>
 
-    <section id="kelola-produk" style="display:none;">
-      <h2>Kelola Produk</h2>
-      <form id="add-product-form">
-        <input type="text" id="product-name" placeholder="Nama Produk" required>
-        <input type="number" id="product-price" placeholder="Harga" required>
-        <input type="text" id="product-image" placeholder="URL/Gambar Produk" required>
-        <button type="submit">Tambah Produk</button>
-      </form>
-      <div id="products-table"></div>
-    </section>
+<h2>Kelola Produk</h2>
+<div>
+  <input type="text" id="product-name" placeholder="Nama Produk">
+  <input type="number" id="product-price" placeholder="Harga">
+  <input type="text" id="product-image" placeholder="URL Gambar">
+  <button onclick="addProductPrompt()">Tambah Produk</button>
+</div>
+<table>
+  <thead>
+    <tr><th>Nama</th><th>Harga</th><th>Gambar</th><th>Aksi</th></tr>
+  </thead>
+  <tbody id="product-list"></tbody>
+</table>
 
-    <section id="kelola-pesanan" style="display:none;">
-      <h2>Kelola Pesanan</h2>
-      <h3>Pending</h3>
-      <div id="pending-orders"></div>
-      <h3>Done</h3>
-      <div id="done-orders"></div>
-      <h3>Batal</h3>
-      <div id="batal-orders"></div>
-    </section>
+<h2>Kelola Pesanan</h2>
+<h3>Pending</h3>
+<table>
+  <thead>
+    <tr><th>Username</th><th>Item</th><th>Total</th><th>Aksi</th></tr>
+  </thead>
+  <tbody id="pending-orders"></tbody>
+</table>
 
-    <section id="announcement-section" style="display:none;">
-      <h2>Announcement</h2>
-      <form id="announcement-form">
-        <input type="text" id="announcement-input" placeholder="Tulis pengumuman" required>
-        <button type="submit">Kirim</button>
-      </form>
-      <div id="announcement-list"></div>
-    </section>
-  </main>
+<h3>Done</h3>
+<table>
+  <tbody id="done-orders"></tbody>
+</table>
 
-  <footer>
-    &copy;2025 SKULLHOSTING - StoreSkull
-  </footer>
+<h3>Batal</h3>
+<table>
+  <tbody id="batal-orders"></tbody>
+</table>
 
-  <script src="js/admin.js"></script>
+<h2>Announcement</h2>
+<input type="text" id="announcement-input" placeholder="Tulis announcement">
+<button onclick="addAnnouncement()">Kirim</button>
+<div id="announcement-list"></div>
 </body>
 </html>
