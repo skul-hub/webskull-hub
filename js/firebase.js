@@ -8,6 +8,7 @@ const firebaseConfig = {
   appId: "1:94784709981:web:8cb540df8cbe5429a034b4"
 };
 
+
 // 🔹 Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -15,7 +16,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// 🔹 Optional: listener status login (realtime)
+// 🔹 Optional: listener status login
 auth.onAuthStateChanged(user => {
   if(user){
     console.log("User logged in:", user.uid);
@@ -24,12 +25,12 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-// 🔹 Function: check admin login
+// 🔹 Admin login manual
 function isAdminLogin(username, password){
   return username === "admin" && password === "admin112233";
 }
 
-// 🔹 Function: register user
+// 🔹 Register user
 function registerUser(username, email, password){
   return auth.createUserWithEmailAndPassword(email, password)
     .then(userCredential=>{
@@ -37,18 +38,25 @@ function registerUser(username, email, password){
       // Simpan data user di Firestore
       return db.collection("users").doc(user.uid).set({
         username: username,
+        email: email,       // wajib ada
         role: "user",
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     });
 }
 
-// 🔹 Function: login user
-function loginUser(email, password){
-  return auth.signInWithEmailAndPassword(email, password);
+// 🔹 Login user
+function loginUser(username, password){
+  // Cari email dari username di Firestore
+  return db.collection("users").where("username","==",username).get()
+    .then(snapshot=>{
+      if(snapshot.empty) throw new Error("Username tidak ditemukan");
+      const email = snapshot.docs[0].data().email;
+      return auth.signInWithEmailAndPassword(email,password);
+    });
 }
 
-// 🔹 Function: logout
+// 🔹 Logout
 function logout(){
   return auth.signOut();
 }
