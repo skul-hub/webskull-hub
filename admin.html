@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StoreSkull - Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="js/firebase.js"></script>
+</head>
+<body>
+  <nav>
+    <div class="logo">StoreSkull Admin</div>
+    <ul>
+      <li><a href="#" id="nav-admin-beranda">Beranda</a></li>
+      <li><a href="#" id="nav-kelola-produk">Kelola Produk</a></li>
+      <li><a href="#" id="nav-kelola-pesanan">Kelola Pesanan</a></li>
+      <li><a href="#" id="nav-announcement">Announcement</a></li>
+      <li><a href="#" id="admin-logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="admin-beranda">
+      <h2>Selamat Datang Di Dashboard Admin</h2>
+      <p>WEBSITE CREATED BY SKULLHOSTING</p>
+    </section>
+
+    <section id="kelola-produk" style="display:none;">
+      <h2>Kelola Produk</h2>
+      <form id="add-product-form">
+        <input type="text" id="product-name" placeholder="Nama Produk" required>
+        <input type="number" id="product-price" placeholder="Harga" required>
+        <input type="text" id="product-image" placeholder="URL/Gambar Produk" required>
+        <button type="submit">Tambah Produk</button>
+      </form>
+      <div id="products-table"></div>
+    </section>
+
+    <section id="kelola-pesanan" style="display:none;">
+      <h2>Kelola Pesanan</h2>
+      <h3>Pending</h3>
+      <div id="pending-orders"></div>
+      <h3>Done</h3>
+      <div id="done-orders"></div>
+      <h3>Batal</h3>
+      <div id="batal-orders"></div>
+    </section>
+
+    <section id="announcement-section" style="display:none;">
+      <h2>Announcement</h2>
+      <form id="announcement-form">
+        <input type="text" id="announcement-input" placeholder="Tulis pengumuman" required>
+        <button type="submit">Kirim</button>
+      </form>
+      <div id="announcement-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    &copy;2025 SKULLHOSTING - StoreSkull
+  </footer>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
