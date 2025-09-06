@@ -45,31 +45,7 @@ async function deleteProduct(docId){
   alert("Produk berhasil dihapus!");
 }
 
-// Tabel produk realtime
-db.collection("products").onSnapshot(snapshot=>{
-  const container = document.getElementById("products-table");
-  container.innerHTML="<table><tr><th>Nama</th><th>Harga</th><th>Gambar</th><th>Aksi</th></tr>";
-  snapshot.forEach(doc=>{
-    const data = doc.data();
-    const row = document.createElement("tr");
-    row.innerHTML=`
-      <td>${data.name}</td>
-      <td>${data.price}</td>
-      <td><img src="${data.imageURL}" width="50"></td>
-      <td>
-        <button onclick="deleteProduct('${doc.id}')">Hapus</button>
-      </td>
-    `;
-    container.appendChild(row);
-  });
-  container.innerHTML+="</table>";
-});
 
-function deleteProduct(id){
-  if(confirm("Hapus produk ini?")){
-    db.collection("products").doc(id).delete();
-  }
-}
 
 // Kelola Pesanan realtime
 db.collection("orders").orderBy("createdAt","desc")
