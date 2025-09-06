@@ -1,4 +1,3 @@
-// 🔹 Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyAcZEqB3krDoB0oyBGAXjD2xB9fpFcw9LE",
   authDomain: "skull-project-67662.firebaseapp.com",
@@ -8,42 +7,30 @@ const firebaseConfig = {
   appId: "1:94784709981:web:8cb540df8cbe5429a034b4"
 };
 
-
-// 🔹 Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// 🔹 Admin login manual
-function isAdminLogin(username,password){
-  return username === "admin" && password === "admin112233";
-}
+function isAdminLogin(username,password){return username==="admin" && password==="admin112233";}
 
-// 🔹 Register user
 function registerUser(username,email,password){
   return auth.createUserWithEmailAndPassword(email,password)
     .then(userCredential=>{
-      const user = userCredential.user;
+      const user=userCredential.user;
       return db.collection("users").doc(user.uid).set({
-        username: username,
-        email: email,
-        role: "user",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        username:username,email:email,role:"user",
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
       });
     });
 }
 
-// 🔹 Login user
 function loginUser(username,password){
   return db.collection("users").where("username","==",username).get()
     .then(snapshot=>{
       if(snapshot.empty) throw new Error("Username tidak ditemukan");
-      const email = snapshot.docs[0].data().email;
+      const email=snapshot.docs[0].data().email;
       return auth.signInWithEmailAndPassword(email,password);
     });
 }
 
-// 🔹 Logout
-function logout(){
-  return auth.signOut();
-}
+function logout(){return auth.signOut();}
